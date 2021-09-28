@@ -1,4 +1,4 @@
-const { MoviesTags, Tag, Movies } = require('../models/indexModels');
+const { MoviesTags, Tag, movies } = require('../models');
 
 
 class MoviesTagsControllers {
@@ -24,7 +24,7 @@ class MoviesTagsControllers {
         MoviesTags.findAll({
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
                     model: Tag
@@ -45,7 +45,7 @@ class MoviesTagsControllers {
             },
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
                     model: Genre
@@ -66,7 +66,7 @@ class MoviesTagsControllers {
             },
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
                     model: Tag
@@ -97,7 +97,7 @@ class MoviesTagsControllers {
         });
     };
 
-    static delete (res, res, next) {
+    static delete (req, res, next) {
         let { id } = req.params;
 
         MoviesTags.destroy({

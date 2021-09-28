@@ -1,4 +1,4 @@
-const { Genre } = require('../models/indexModels');
+const { Genre } = require('../models');
 
 class GenreController{
 

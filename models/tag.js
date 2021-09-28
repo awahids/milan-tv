@@ -19,8 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Tag',
   });
-  // Tag.associate = function(models) {
-  //   Tag.belongsToMany(models.Movies, { through: "MoviesTags"});
-  // };
+  Tag.associate = function(models) {
+    Tag.belongsToMany(models.movies, { 
+      through: "MoviesTags"});
+  };
   return Tag;
 };

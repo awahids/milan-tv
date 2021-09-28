@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const MoviesGenresControllers = require ('../controllers/moviesGenresControllers');
-const { authAdmin } = require('../middlewares/authorization');
-const auth = require('../middlewares/authorization');
+// const { authAdmin } = require('../middlewares/authorization');
+const auth = require('../middlewares/authentication');
 
-router.post('/create', auth, authAdmin, MoviesGenresControllers.create);
+router.post('/create', auth, MoviesGenresControllers.create);
 router.get('/moviesbygenre', MoviesGenresControllers.getAllMoviesByGenre);
-router.put('/update/:id', auth, authAdmin, MoviesGenresControllers.update);
-router.delete('/delete/:id', auth, authAdmin, MoviesGenresControllers.delete);
+router.put('/update/:id', auth, MoviesGenresControllers.update);
+router.delete('/delete/:id', auth, MoviesGenresControllers.delete);
 
 
 module.exports = router;

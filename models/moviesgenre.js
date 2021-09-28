@@ -20,16 +20,14 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'MoviesGenre',
   });
-
   MoviesGenre.associate = function(models) {
-    MoviesGenre.belongsTo(models.Movies, {
-      foreignKey: "moviesId"
+    MoviesGenre.belongsTo(models.movies, {
+      foreignKey: "movieId"
     });
 
     MoviesGenre.belongsTo(models.Genre, {
-      foreignKey: "genreId"
+      foreignKey: "GenreId"
     })
   };
-  
   return MoviesGenre
 };

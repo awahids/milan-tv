@@ -1,13 +1,13 @@
-const { MoviesGenre, Genre, Movies } = require('../models/indexModels');
+const { MoviesGenre, Genre, movies } = require('../models');
 
 
 class MoviesGenresControllers {
     static create (req, res, next) {
-        let { moviesId, genreId } = req.body;
+        let { movieId, GenreId } = req.body;
 
         MoviesGenre.create({
-            moviesId: moviesId,
-            genreId: genreId
+            movieId: movieId,
+            GenreId: GenreId
         })
         .then(data => {
             res.status(201).json({ message: 'movies genre models has been created'})
@@ -24,7 +24,7 @@ class MoviesGenresControllers {
         MoviesGenre.findAll({
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
                     model: Genre
@@ -45,7 +45,7 @@ class MoviesGenresControllers {
             },
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
                     model: Genre
@@ -66,7 +66,7 @@ class MoviesGenresControllers {
             },
             include: [
                 {
-                    model: Movies
+                    model: movies
                 },
                 {
                     model: Genre
@@ -97,7 +97,7 @@ class MoviesGenresControllers {
         });
     };
 
-    static delete (res, res, next) {
+    static delete (req, res, next) {
         let { id } = req.params;
 
         MoviesGenre.destroy({

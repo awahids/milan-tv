@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   MoviesTags.associate = function(models) {
-    MoviesTags.belongsTo(models.Movies, {
+    MoviesTags.belongsTo(models.movies, {
       foreignKey: "moviesId"
     });
 

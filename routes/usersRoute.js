@@ -3,7 +3,7 @@ const router = express.Router()
 const users = require('../controllers/usersControllers')
 const auth = require('../middlewares/authentication')
 const author = require('../middlewares/authorization')
-const uploadAvatar = require('../middlewares/uploadAvatar')
+// const uploadAvatar = require('../middlewares/uploadAvatar')
 
 router.post("/login", users.login) 
 router.post("/register", users.register) 

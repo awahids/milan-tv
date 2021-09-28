@@ -1,6 +1,6 @@
-const { Artists } = require('../models')
+const { Artists } = require("../models")
 const joi = require('joi')
-const {validator} = require('./../helpers/validator')
+const {validator} = require('../helpers/validator')
 
 module.exports = {
     addArtist: async (req, res) => {
