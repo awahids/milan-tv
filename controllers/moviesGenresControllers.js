@@ -15,14 +15,14 @@ class MoviesGenresControllers {
         .catch(next);
     };
 
-    static async getAllMoviesByGenre(req, res, next) {
+    static getAllMoviesByGenre(req, res, next) {
         let { page } = req.params;
         let { GenreId } = req.params;
 
         if(!page) {
             page = 1
         }
-        const allMovies = await movies.findAll({
+        const allMovies = movies.findAll({
                 include: [
                     {
                         model: MoviesGenre,
