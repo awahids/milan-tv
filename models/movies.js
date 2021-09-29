@@ -28,15 +28,13 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'movies',
   });
   movies.associate = function(models) {
-    movies.belongsToMany(models.Genre, {
-      through: "MoviesGenre"
-    });
+    movies.hasMany(models.MoviesGenre);
   }
 
-  movies.associate = function(models) {
-    movies.belongsToMany(models.Tag, {
-      through: "MoviesTags"
-    });
-  };
+  // movies.associate = function(models) {
+  //   movies.belongsToMany(models.Tag, {
+  //     through: "MoviesTags"
+  //   });
+  // };
   return movies;
 };

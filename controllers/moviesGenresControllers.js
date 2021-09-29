@@ -15,33 +15,35 @@ class MoviesGenresControllers {
         .catch(next);
     };
 
-    static getAllMoviesByGenre(req, res, next) {
+    static async getAllMoviesByGenre(req, res, next) {
         let { page } = req.params;
+        let { GenreId } = req.params;
 
         if(!page) {
             page = 1
         }
-        MoviesGenre.findAll({
-            include: [
-                {
-                    model: movies
-                },
-                {
-                    model: Genre
-                }
-            ],
-            offset: (15*(page-1))+1,
-            limit: 15
-        });
-        res.status(200).json(MoviesGenre)
+        const allMovies = await movies.findAll({
+                include: [
+                    {
+                        model: MoviesGenre,
+                        include: Genre,
+                        where : {
+                            GenreId : GenreId
+                        },
+                    }
+                ],
+                offset: (15*(page-1))+1,
+                limit: 15
+            });
+        res.status(200).json(allMovies)
     };
 
-    static getMoviesByGenre(req, res, next) {
-        let { genreId, page } = req.params;
+    static async getMoviesByGenre(req, res, next) {
+        let { GenreId, page } = req.params;
 
-        MoviesGenre.findAndCountAll({
+        const findGenreByMovie = await MoviesGenre.findAndCountAll({
             where: { 
-                genreId: genreId
+                GenreId: GenreId
             },
             include: [
                 {
@@ -54,15 +56,15 @@ class MoviesGenresControllers {
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesGenre)
+        res.status(200).json(findGenreByMovie)
     };
 
     static getGenresByMovie(req, res, next) {
-        let { moviesId } = req.params;
+        let { movieId } = req.params;
 
         MoviesGenre.findAll({
             where: { 
-                moviesId: moviesId
+                movieId: movieId
             },
             include: [
                 {
@@ -78,11 +80,11 @@ class MoviesGenresControllers {
 
     static update (req, res, next){
         let { id } = req.params;
-        let { moviesId, genreId } = req.body;
+        let { movieId, GenreId } = req.body;
 
         MoviesGenre.update({
-            moviesId: moviesId,
-            genreId: genreId
+            movieId: movieId,
+            GenreId: GenreId
         }, {
             where: {
                 id: id

@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Genre',
   });
   Genre.associate = function(models) {
-    Genre.belongsToMany(models.movies, { through: "MoviesGenre"})
+    Genre.belongsToMany(models.movies, { through: "MoviesGenres"})
   };
   return Genre;
 };
