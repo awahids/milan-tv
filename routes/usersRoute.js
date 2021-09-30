@@ -3,14 +3,13 @@ const router = express.Router()
 const users = require('../controllers/usersControllers')
 const auth = require('../middlewares/authentication')
 const author = require('../middlewares/authorization')
-// const uploadAvatar = require('../middlewares/uploadAvatar')
+const uploadAvatar = require('../middlewares/uploadAvatar')
 
 router.post("/login", users.login) 
-router.post("/register", users.register) 
+router.post("/register", uploadAvatar("img"), users.register) 
 router.get("/:id", auth, users.getOneUser)
 router.put("/password/:id", auth, author.authUser, users.updatePassUsers)
-router.put("/data/:id", auth, author.authUser, users.updateDataUsers)
+router.put("/data/:id", auth, author.authUser, uploadAvatar("img"), users.updateDataUsers)
+router.delete("/delete/:id", auth, author.authUser, users.deleteUsers)
 
 module.exports = router
-
-//makesure FE & RN perihal delete user

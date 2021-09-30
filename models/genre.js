@@ -9,9 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    // static associate(models) {
       // define association here
-    }
+      
+    // }
   };
   Genre.init({
     name: DataTypes.STRING
@@ -20,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Genre',
   });
   Genre.associate = function(models) {
-    Genre.belongsToMany(models.movies, { through: "MoviesGenres"})
-  };
+    Genre.belongsToMany(models.Movies, { through: "MovieGenres", foreignKey: "GenreId" });
+  }
   return Genre;
 };
