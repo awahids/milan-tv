@@ -24,15 +24,15 @@ class MoviesTagsControllers {
         const allMovies = await Movies.findAll({
                 include: [
                     {
-                        model: MovieGenre,
+                        model: MovieTag,
                         include: [{
                             model: Tag,
                             attributes: ["name"]
                         }],
                     }
                 ],
-                // offset: (15*(page-1))+1,
-                // limit: 15
+                offset: 15*(page-1),
+                limit: 15
             });
         res.status(200).json(allMovies)
     };
@@ -47,15 +47,15 @@ class MoviesTagsControllers {
         const moviesByTag = await Movies.findAll({
                         include: [ 
                             { 
-                                model: MovieGenre,
+                                model: MovieTag,
                                 attributes : { exclude : ["id", "MovieId", "updatedAt", "createdAt"]},
                                 where: {
                                     TagId: TagId
                                 }, include: Tag,
                             }
                         ],
-                // offset: (15*(page-1))+1,
-                // limit: 15
+                offset: 15*(page-1),
+                limit: 15
             });
         res.status(200).json(moviesByTag)
     };
@@ -71,14 +71,14 @@ class MoviesTagsControllers {
         const dataTagMovie = await Movies.findAll({
                         include: [ 
                             { 
-                                model: MovieGenre,
+                                model: MovieTag,
                                 where: {
                                     MovieId: MovieId
                                 }, include: Tag,
                             }
                         ],
-                // offset: (15*(page-1))+1,
-                // limit: 15
+                offset: 15*(page-1),
+                limit: 15
             });
         res.status(200).json(dataTagMovie)
     }; 

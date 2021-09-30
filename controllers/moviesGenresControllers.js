@@ -32,8 +32,8 @@ class MoviesGenresControllers {
                         }],
                     }
                 ],
-                // offset: (15*(page-1))+1,
-                // limit: 15
+                offset: 15*(page-1),
+                limit: 15
             });
         res.status(200).json(allMovies)
     };
@@ -55,8 +55,8 @@ class MoviesGenresControllers {
                                 }, include: Genre,
                             }
                         ],
-                // offset: (15*(page-1))+1,
-                // limit: 15
+                offset: 15*(page-1),
+                limit: 15
             });
         res.status(200).json(moviesByGenre)
     };
@@ -78,8 +78,8 @@ class MoviesGenresControllers {
                                 }, include: Genre,
                             }
                         ],
-                // offset: (15*(page-1))+1,
-                // limit: 15
+                offset: 15*(page-1),
+                limit: 15
             });
         res.status(200).json(dataGenreMovie)
     }; 
