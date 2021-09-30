@@ -2,14 +2,28 @@ const { Tag } = require('../models');
 
 class tagsController{
 
-    static create (req, res, next) {
+    static async create (req, res, next) {
         let { name } = req.body;
+        const tagName  = await Tag.findOne({ where: {name: name}});
 
-        Tag.create({
+        if(!name) {
+            res.status(400).json({ 
+                status: "failed",
+                message: "Please put Tag name",
+            });
+        }
+        if(tagName) {
+            res.status(400).json({ 
+                status: "failed",
+                message: "Tag already been used, please add another Tag",
+            });
+        };
+
+    const createTag = Tag.create({
             name: name
         })
         .then(data => {
-            res.status(201).json({ message: 'Tag has been created'});
+            res.status(201).json(createTag);
         })
         .catch(next);
     };
