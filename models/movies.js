@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Movies.belongsToMany(models.Users,
         {
           through: models.Reviews,
-          as : "Movie Review"
+          as : "review"
         }
       )
       Movies.belongsToMany(models.Tags,

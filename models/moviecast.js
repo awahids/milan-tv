@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      MoviesCasts.belongsTo(models.Movies, { foreignKey: "MovieId"})
-      MoviesCasts.belongsTo(models.Artists, { foreignKey: "ArtistId"})
+      MoviesCasts.belongsTo(models.Movies, { foreignKey: "movieId"})
+      MoviesCasts.belongsTo(models.Artists, { foreignKey: "artistId"})
     }
   };
   MoviesCasts.init({

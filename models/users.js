@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Users.belongsToMany(models.Movies, {
         through: models.Reviews,
-        as : "User Review"
+        as : "review"
       });
     }
   };
