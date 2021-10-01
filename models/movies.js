@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
   Movies.associate = function(models) {
     Movies.hasMany(models.MovieGenre);
     
-    Movies.hasMany(models.MovieTag)
+    Movies.hasMany(models.MovieTag);
   }
   return Movies;
 };
