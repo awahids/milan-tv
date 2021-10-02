@@ -1,2 +1,0 @@
-# BackendTeam_B
-

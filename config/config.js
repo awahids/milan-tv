@@ -23,7 +23,7 @@ module.exports =
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "DATABASE_URL",
+    "use_env_variable": "HEROKU_POSTGRESQL_BLUE_URL",
     "protocol": "postgres",
     "dialect": "postgres",
     "dialectOptions": {
