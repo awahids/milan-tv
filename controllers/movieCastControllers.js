@@ -67,7 +67,7 @@ class MoviesCastControllers {
     static getCharactersByMovies(req, res, next) {
         let { ArtistId } = req.params;
 
-        MoviesTags.findAll({
+        MoviesCast.findAll({
             where: { 
                 ArtistId: ArtistId
             },
@@ -83,7 +83,7 @@ class MoviesCastControllers {
                 }
             ],
         });
-        res.status(200).json(MoviesTags)
+        res.status(200).json(MoviesCast)
     };
 
     static update (req, res, next){
