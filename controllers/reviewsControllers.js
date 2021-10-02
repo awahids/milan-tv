@@ -1,11 +1,13 @@
 const { Reviews, Users, Movies } = require('../models');
 const Joi = require('joi');
 
-const sequelize = require('sequelize')
+const sequelize = require('sequelize');
+const { request } = require('express');
 
 module.exports = {
     postReview: async (req, res) => {
         const body = req.body
+        const UserId = req.users.id //untuk ngambil validasi dan membatasi users 
         try {
             const schema = Joi.object({
                 MovieId: Joi.number(),
@@ -15,8 +17,8 @@ module.exports = {
             })
 
             const check = schema.validate({
-                MovieId: body.MovieId,
-                UserId: body.UserId,
+                MovieId: req.params.id,
+                UserId: UserId,
                 rating: body.rating,
                 comment: body.comment,
             }, { abortEarly: false });
@@ -31,8 +33,8 @@ module.exports = {
 
             const checkUser = await Reviews.findOne({
                 where: {
-                    MovieId: body.MovieId,
-                    UserId: body.UserId
+                    MovieId: req.params.id,
+                    UserId: UserId
                 }
             })
 
@@ -44,15 +46,15 @@ module.exports = {
             }
 
             const newReview = await Reviews.create({
-                MovieId: body.MovieId,
-                UserId: body.UserId,
+                MovieId: req.params.id,
+                UserId: UserId,
                 rating: body.rating,
                 comment: body.comment
             });
 
             const allRating = await Reviews.findAll({
                 where : {
-                    movieId : movieId
+                    MovieId : req.params.id
                 }
             })
 
@@ -66,16 +68,14 @@ module.exports = {
             const ratingFix = Math.round(sum / ratingAverage.length)
 
             const newMovie = await Movies.update({
-                ...body,
                 rating: ratingFix,
             }, {
                 where: {
-                    movieId : movieId
+                    id : req.params.id
                 }
             })
 
             if (!newMovie[0]) {
-                transaction.rollback()
                 return res.status(400).json({
                     status: "failed",
                     message: "Unable to update database",
@@ -101,7 +101,7 @@ module.exports = {
         const id = req.params.id
         try {
             const oneReview = await Reviews.findOne({ where: { id } });
-            console.log(oneReview + "test")
+            // console.log(oneReview + "test")
             if (!oneReview) {
                 return res.status(400).json({
                     status: "failed",
@@ -158,13 +158,18 @@ module.exports = {
     updateReview: async (req, res) => {
         const body = req.body
         const id = req.params.id
+        const UserId = req.users.id
         try {
             const schema = Joi.object({
-                rating: Joi.number().min(1).max(5).required(),
+                MovieId: Joi.number(),
+                UserId: Joi.number(),
+                rating: Joi.number().min(1).max(5),
                 comment: Joi.string(),
             })
 
             const check = schema.validate({
+                MovieId: req.params.id,
+                UserId: UserId,
                 rating: body.rating,
                 comment: body.comment,
             }, { abortEarly: false });
@@ -179,16 +184,51 @@ module.exports = {
 
             const reviewUpdate = await Reviews.update(
                 {
+                    MovieId: req.params.id,
+                    UserId: UserId,
                     rating: body.rating,
                     comment: body.comment
                 },
-                { where: { id } }
+                { where: { 
+                    UserId: UserId,
+                    MovieId : id
+                 } }
             );
 
             if (!reviewUpdate[0]) {
                 return res.status(400).json({
                     status: "failed",
                     message: "Unable to input data"
+                });
+            }
+
+            const allRating = await Reviews.findAll({
+                where : {
+                    MovieId : req.params.id
+                }
+            })
+
+            let ratingAverage = allRating.map(e => {
+                return e.dataValues.rating
+            })
+
+            ratingAverage.push(body.rating)
+
+            const sum = ratingAverage.reduce((a,b) => a+b)
+            const ratingFix = Math.round(sum / ratingAverage.length)
+
+            const newMovie = await Movies.update({
+                rating: ratingFix,
+            }, {
+                where: {
+                    id : req.params.id
+                }
+            })
+
+            if (!newMovie[0]) {
+                return res.status(400).json({
+                    status: "failed",
+                    message: "Unable to update database",
                 });
             }
 

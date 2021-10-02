@@ -11,8 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Reviews.belongsTo(models.Movies, { foreignKey: "MovieId"})
-      Reviews.belongsTo(models.Users, { foreignKey: 'UserId'})
     }
   };
   Reviews.init({
@@ -24,5 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Reviews',
   });
+
+Reviews.associate = function(models) {
+  Reviews.belongsTo(models.Movies, { foreignKey: 'MovieId'})
+  Reviews.belongsTo(models.Users, { foreignKey: 'UserId'})
+}
   return Reviews;
 };
