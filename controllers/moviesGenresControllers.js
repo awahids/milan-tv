@@ -4,6 +4,26 @@ const { MovieGenre, Genre, Movies } = require('../models');
 class MoviesGenresControllers {
     static async create (req, res, next) {
         let { MovieId, GenreId } = req.body;
+
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
+        })
+
+        const checkGenreId = await Genre.findOne({
+            where: {
+                id: GenreId
+            }
+        })
+
+        if(!checkMovieId || !checkGenreId) {
+            res.status(400).json({
+                status: "failed",
+                message: "Movie or Genre Not Found"
+            })
+        }
+
         const dataGenre = await MovieGenre.findOne({
             where: {
                 MovieId: MovieId,
@@ -99,28 +119,47 @@ class MoviesGenresControllers {
         let { id } = req.params;
         let { MovieId, GenreId } = req.body;
         const idMovieGenre = await MovieGenre.findOne({where: {id: id}});
-
+        
         if(!idMovieGenre ) {
             res.status(400).json({
                 status: "failed",
                 message: `Movies genres id ${id} has not found`
             })
-        } else if (!MovieId || !GenreId) {
+            } else if (!MovieId || !GenreId) {
+                res.status(400).json({
+                    status: "failed",
+                    message: "Please fill the required"
+                })
+            }
+            
+        const checkUpdateMovieGenre = await MovieGenre.findOne({
+            where: {
+                MovieId: MovieId,
+                GenreId: GenreId
+            }
+        })
+        
+        if(checkUpdateMovieGenre) {
             res.status(400).json({
                 status: "failed",
-                message: "Please fill the required"
+                message: "Movie already have the Genre"
             })
-        } else {
-            MovieGenre.update({
-            MovieId: MovieId,
-            GenreId: GenreId
-        }, {
-            where: {
-                id: id
-            }
-        })};
-        res.status(200).json({ message: `Movie id ${MovieId} with genres id ${GenreId} has been updated`})
-            
+        } 
+                
+        const updateMov = await MovieGenre.update({
+                MovieId: MovieId,
+                GenreId: GenreId
+            }, {
+                where: {
+                    id: id
+                }
+            });
+
+        if(updateMov) {
+            res.status(200).json({
+                message: `Movie id ${MovieId} with genres id ${GenreId} has been updated`
+            })}
+           
     };
 
     static delete (req, res, next) {

@@ -4,6 +4,26 @@ const { MovieTag, Tag, Movies } = require('../models');
 class MoviesTagsControllers {
     static async create (req, res, next) {
         let { MovieId, TagId } = req.body;
+
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
+        })
+
+        const checkTagId = await Tag.findOne({
+            where: {
+                id: TagId
+            }
+        })
+
+        if(!checkMovieId || !checkTagId) {
+            res.status(400).json({
+                status: "failed",
+                message: "Movie or Tag Not Found"
+            })
+        }
+
         const dataMovieTag = await MovieTag.findOne({
             where: {
                 MovieId: MovieId,
@@ -98,9 +118,10 @@ class MoviesTagsControllers {
     static async update (req, res, next){
         let { id } = req.params;
         let { MovieId, TagId } = req.body;
+
         const dataMovieTag = await MovieTag.findOne({where: {id: id}});
 
-        if(!dataMovieTag || dataMovieTag == undefined) {
+        if(!dataMovieTag) {
             res.status(400).json({
                 status: "failed",
                 message: `Movies tags id ${id} has not found`
@@ -108,22 +129,39 @@ class MoviesTagsControllers {
         } else if (!MovieId || !TagId) {
             res.status(400).json ({
                 status: "failed",
-                message: "Please input the required"
+                message: "Please fill the required"
             })
-        } else {
-            const createUpdateTag = await MovieTag.update({
+        } 
+
+        const dataUpdateTag = await MovieTag.findOne({
+            where: {
                 MovieId: MovieId,
                 TagId: TagId
-            }, {
-                where: {
-                    id: id
-                }
+            }
+        });
+
+        if(dataUpdateTag) {
+            res.status(400).json({
+                status: "failed",
+                message: "Movie already have the Tag"
+            });
+        };
+
+        const createUpdateTag = await MovieTag.update({
+            MovieId: MovieId,
+            TagId: TagId
+        }, {
+            where: {
+                id: id
+            }
+        })
+        
+        if(createUpdateTag) {
+            res.status(200).json({
+                status: "Success",
+                message: `Movie id ${MovieId} has been updated`
             })
         }
-        res.status(200).json({
-            status: "Success",
-            message: `Movie id ${MovieId} has been updated`
-        })
     };
         
     
