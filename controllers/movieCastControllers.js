@@ -2,112 +2,133 @@ const { MoviesCast, Movies, Artists, Genres } = require('../models');
 
 
 class MoviesCastControllers {
-    static create (req, res, next) {
-        let { movieId, ArtistId } = req.body;
+    static postMovieCast (req, res, next) {
+        let { MovieId, ArtistId } = req.body;
+        const data = await MoviesCast.findOne({
+            where : {
+                MovieId : MovieId,
+                ArtistId : ArtistId
+            }
+        })
 
+        if(data) {
+            res.status(400).json({
+                status: "Failed",
+                message: 'Movies characters already'
+        })
+    } else {
         MoviesCast.create({
-            movieId: movieId,
-            ArtistId: ArtistId
-        })
-        .then(data => {
-            res.status(201).json({ message: 'movies characters models has been created'})
-        })
+        MovieId: MovieId,
+        ArtistId: ArtistId
+    })}
+    res.status(201).json({ message: 'Movies characters models has been created'})
         .catch(next);
     };
 
     static getAllMoviesByCharacters(req, res, next) {
-        let { page } = req.params;
+        let { page } = req.query;
 
         if(!page) {
             page = 1
         }
-        MoviesCast.findAll({
+       const movies = await Movies.findAll({
             include: [
                 {
-                    model: Movies
+                    model: MoviesCast,
+                    include: [{
+                        model: Artists,
+                        model: Genres
+                    }]
                 },
-                {
-                    model: Artists
-                },
-                {
-                    model: Genres
-                }
             ],
-            offset: (15*(page-1))+1,
+            offset: 15*(page-1),
             limit: 15
         });
-        res.status(200).json(MoviesCast)
+        res.status(200).json(movies)
     };
     
 
     static getMoviesByCharacters(req, res, next) {
-        let { movieId, page } = req.params;
+        let { ArtistId, page } = req.query;
 
-        MoviesCast.findAndCountAll({
-            where: { 
-                movieId: movieId
-            },
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Artists
-                },
-                {
-                    model: Genres
+        if(!page) {
+            page = 1
+        }
+
+        const moviesByArtist = await.Movies.findAll({
+            include: [ 
+                { 
+                    model: MovieCast,
+                    attributes : { exclude : ["id", "MovieId", "updatedAt", "createdAt"]},
+                    where: {
+                        ArtistId: ArtistId
+                    }, include: Artists,
                 }
             ],
+
             offset: (15*(page-1))+1,
             limit: 15
         });
-        res.status(200).json(MoviesCast)
+        res.status(200).json(moviesByArtist)
     };
 
     static getCharactersByMovies(req, res, next) {
-        let { ArtistId } = req.params;
+        let { MovieId, page } = req.query;
 
-        MoviesCast.findAll({
-            where: { 
-                ArtistId: ArtistId
-            },
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Artists
-                },
-                {
-                    model: Genres
+        if(!page) {
+            page = 1
+        }
+
+        const artistMovie = await Movies.findAll({
+            include: [ 
+                { 
+                    model: MovieGenre,
+                    where: {
+                        MovieId: MovieId
+                    }, 
+                    include: Artists,
                 }
             ],
+
+            offset: 15*(page-1),
+                limit: 15
         });
-        res.status(200).json(MoviesCast)
+        res.status(200).json(artistMovie)
     };
 
-    static update (req, res, next){
+    static movieCastUpdate (req, res, next){
         let { id } = req.params;
-        let { movieId, ArtistId } = req.body;
+        let { MovieId, ArtistId } = req.body;
+        const movieCast = await MovieCast.findOne({
+            where: {
+                id: id
+            }
+        });
 
-        MoviesCast.update({
-            movieId: movieId,
+        if(!movieCast ) {
+            res.status(400).json({
+                status: "failed",
+                message: `Movies Artist id ${id} has not found`
+            })
+        } else if (!MovieId || !ArtistId) {
+            res.status(400).json({
+                status: "Failed",
+                message: "Bad Request"
+            })
+        } else {
+            MoviesCast.update({
+            MovieId: MovieId,
             ArtistId: ArtistId
         }, {
             where: {
                 id: id
             }
-        })
-        .then(data => {
-            if(!data) {
-                    throw { message: `Characters id ${id} has not found`}
-                } else {
-                    res.status(200).json({ message: `Characters id ${id} has been updated`})
-            }
-        });
+        })};
+        res.status(200).json({ message: `Artist id ${ArtistId} has been updated`})
+            
     };
 
-    static delete (res, res, next) {
+    static movieCastDelete (res, res, next) {
         let { id } = req.params;
 
         MoviesCast.destroy({

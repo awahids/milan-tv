@@ -131,7 +131,7 @@ module.exports = {
             const dataReview = await Reviews.findAll({
                 limit: limit,
                 offset: offset,
-                order: [["createdAt", "updatedAt"]]
+                // order: [["createdAt", "updatedAt"]]
             });
 
             if (!dataReview) {
@@ -150,6 +150,33 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({
                 status: "Failed",
+                message: "Internal Server Error"
+            })
+        }
+    },
+
+    getAllReviewByMovie: async (req, res) => {
+        const id = req.params.id
+        try {
+            const dataReview = await Reviews.findAll({
+            where: {MovieId: id}}
+            );
+            
+            if (!dataReview) {
+                return res.status(400).json({
+                    status: "failed",
+                    message: "Data not found"
+                });
+            }
+            return res.status(200).json({
+                status: "success",
+                message: "Succesfully Retrieved Review",
+                data: dataReview
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "failed",
                 message: "Internal Server Error"
             })
         }
@@ -232,8 +259,11 @@ module.exports = {
                 });
             }
 
-            const data = await Reviews.findOne({
-                where: { id }
+            const data = await Reviews.findAll({
+                where: { 
+                    UserId: UserId,
+                    MovieId : id
+                }
             })
 
             return res.status(200).json({
